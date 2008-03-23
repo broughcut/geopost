@@ -5,20 +5,20 @@ class Geopost
 
   attr_accessor :code, :lat, :lng, :partial, :country, :valid
 
-  def initialize(obj,country=:GB)
+  def initialize(obj, country=:GB)
 
     @country = country.to_s.upcase
     @valid = false
     
     if obj.class != String
       validate(obj.postcode)
-      geocode(@code,country)
+      geocode(@code) if @code
       obj.lat = @lat
       obj.lng = @lng
       return obj
     else
       validate(obj)
-      geocode(@code,country)
+      geocode(@code) if @code
     end
 
   end
@@ -36,10 +36,12 @@ class Geopost
         @code = (code.split('')[0..3]).join('')
       end
       @valid = true if @code.gsub(/\+/,' ').match(/GIR 0AA|[A-PR-UWYZ]([0-9]{1,2}|([A-HK-Y][0-9]|[A-HK-Y][0-9]([0-9]|[ABEHMNPRV-Y]))|[0-9][A-HJKS-UW]) [0-9][ABD-HJLNP-UW-Z]{2}/)
+    else
+      @code = code
     end
   end
 
-  def geocode(code,country)
+  def geocode(code)
     part = code.split('+').first
     codes = {}
     eval File.readlines("#{GEOPOST_ROOT}/geocoded/#{country.to_s}.txt").to_s
@@ -47,8 +49,8 @@ class Geopost
     if codes[code]
       @lat = codes[code][:lat]
       @lng = codes[code][:lng]
-    elsif @valid
-      response = Geocall.new(code,country).response
+    elsif @valid || @country != "UK"
+      response = Geocall.new(code,@country).response
       parse(response) if response.include?('Zoom')
     elsif @lat.nil? && codes[part]
       @lat = codes[part][:lat]
