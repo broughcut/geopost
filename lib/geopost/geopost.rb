@@ -3,14 +3,15 @@ require 'eventmachine'
 
 class Geopost
 
-  attr_accessor :code, :lat, :lng, :partial, :country, :valid
+  attr_accessor :code, :lat, :lng, :partial, :part, :country, :valid
 
   def initialize(obj, country=:GB)
 
+    @part = nil
     @country = country.to_s.upcase
     @valid = false
     
-    if obj.class != String
+    if obj.respond_to?(:postcode)
       validate(obj.postcode)
       geocode(@code) if @code
       obj.lat = @lat
@@ -30,6 +31,7 @@ class Geopost
     when :GB
       code.gsub!(/\s/){}
       code.upcase!
+      @part = code.split('+').first
       if code.size > 4
         @code = code.split('').insert(-4,'+').join('')
       else
@@ -42,7 +44,6 @@ class Geopost
   end
 
   def geocode(code)
-    part = code.split('+').first
     codes = {}
     eval File.readlines("#{GEOPOST_ROOT}/geocoded/#{country.to_s}.txt").to_s
 
@@ -52,15 +53,15 @@ class Geopost
     elsif @valid || @country != "UK"
       response = Geocall.new(code,@country).response
       parse(response) if response.include?('Zoom')
-    elsif @lat.nil? && codes[part]
-      @lat = codes[part][:lat]
-      @lng = codes[part][:lng]
+    elsif @lat.nil? && codes[@part]
+      @lat = codes[@part][:lat]
+      @lng = codes[@part][:lng]
       @partial = true
     else
       puts "#{code} not found"
     end
     
-    code = part if @partial
+    code = @part if @partial
     unless codes[code] || @lng.nil?
       file = File.open("#{GEOPOST_ROOT}/geocoded/#{country.to_s}.txt", "a")
       file.puts "codes['#{code}'] = {:lat => '#{@lat}', :lng => '#{@lng}'}"
