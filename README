@@ -14,6 +14,8 @@ Example
 
 Geopost.new("EC2A 3JL")
 
+Geopost.new(90210, :us)
+
 Where 'bar' object has postcode attribute and writable lat and lng
 attributes:
 
