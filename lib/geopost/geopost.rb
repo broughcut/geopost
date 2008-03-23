@@ -3,8 +3,6 @@ require 'eventmachine'
 
 class Geopost
 
-  SERVER = 'geo.localsearchmaps.com'
-  
   attr_accessor :code, :lat, :lng, :partial, :country, :valid
 
   def initialize(obj,country=:GB)
