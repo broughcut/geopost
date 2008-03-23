@@ -1,0 +1,21 @@
+Geopost
+=======
+
+Geocode postcodes using Emad Fanous's localsearchmaps.com api.
+
+Precisely geocodes full UK postocdes, falling back a comprehensive local
+list of primary postcode areas.
+
+Results are cached in lib/geocoded. I'll merge cache files from forked
+repos to speed up queries and reduce the burden on Emad's server.
+
+Example
+=======
+
+Geopost.new("EC2A 3JL")
+
+Where 'bar' object has postcode attribute and writable lat and lng
+attributes:
+
+Geopost.new(bar)
+
