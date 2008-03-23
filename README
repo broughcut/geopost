@@ -12,12 +12,21 @@ repos to speed up queries and reduce the burden on Emad's server.
 Example
 =======
 
-Geopost.new("EC2A 3JL")
+Geo::Post.new("EC2A 3JL")
 
-Geopost.new(90210, :us)
+Geo::Post.new(90210, :us)
 
 Where 'bar' object has postcode attribute and writable lat and lng
 attributes:
 
-Geopost.new(bar)
+Geo::Post.new(bar)
 
+Actual driving distance and travel time between two postcodes:
+
+Loading development environment (Rails 2.0.2)
+>> Geo::Drive.new("sw19", "l37 !  2hn")
+"RECEIVED 25025 CHUNK"
+"Got A BLANK chunk line"
+=> #<Geo::Drive:0xb70cf99c @miles=233.0, @from="SW19", @minutes=10, @hours=4, @to="L37+2HN">
+
+Passed postcodes filtered through Geo:Post for error correction.
