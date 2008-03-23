@@ -41,7 +41,7 @@ class Geopost
       end
       @valid = true if @code.gsub(/\+/,' ').match(/GIR 0AA|[A-PR-UWYZ]([0-9]{1,2}|([A-HK-Y][0-9]|[A-HK-Y][0-9]([0-9]|[ABEHMNPRV-Y]))|[0-9][A-HJKS-UW]) [0-9][ABD-HJLNP-UW-Z]{2}/)
     when :US
-      @code = code.to_s.gsub(/[aA-zZ]|\-|\s/){}
+      @code = code.to_s.gsub(/[aA-zZ]|\W|\s/){}
       if @code.size == 9
         @code = @code.split('').insert(5,'-').join('')
         @part = @code.split('')[0..4].join('')
